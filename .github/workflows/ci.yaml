@@ -63,11 +63,6 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test:cov
-      - uses: codecov/codecov-action@v5
-        with:
-          fail_ci_if_error: true
-          flags: unittests
-          token: ${{ secrets.CODECOV_TOKEN }}
 
   docker:
     needs:
