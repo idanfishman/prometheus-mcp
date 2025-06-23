@@ -5,6 +5,15 @@ import { PrometheusClient } from "./client";
 const mockFetch = vi.fn();
 global.fetch = mockFetch;
 
+// Mock the logger
+vi.mock("../logging/logging", () => ({
+  logger: {
+    info: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn(),
+  },
+}));
+
 describe("PrometheusClient", () => {
   let client: PrometheusClient;
   const baseUrl = "http://localhost:9090";
