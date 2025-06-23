@@ -1,7 +1,7 @@
 # Prometheus MCP Server
 
 [![codecov](https://codecov.io/gh/idanfishman/prometheus-mcp/branch/master/graph/badge.svg)](https://codecov.io/gh/idanfishman/prometheus-mcp)
-[![npm](https://img.shields.io/npm/v/@idanfishman/prometheus-mcp.svg)](https://www.npmjs.com/package/@idanfishman/prometheus-mcp)
+[![npm](https://img.shields.io/npm/v/prometheus-mcp.svg)](https://www.npmjs.com/package/prometheus-mcp)
 [![Docker](https://img.shields.io/docker/v/ghcr.io/idanfishman/prometheus-mcp?label=docker&sort=semver)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen)](https://nodejs.org/)
@@ -38,7 +38,7 @@ like this:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["@idanfishman/prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest"]
     }
   }
 }
@@ -50,10 +50,10 @@ You can install the Prometheus MCP server using the VS Code CLI:
 
 ```bash
 # For VS Code
-code --add-mcp '{"name":"prometheus","command":"npx","args":["@idanfishman/prometheus-mcp@latest"]}'
+code --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest"]}'
 
 # For VS Code Insiders
-code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["@idanfishman/prometheus-mcp@latest"]}'
+code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest"]}'
 ```
 
 After installation, the Prometheus MCP server will be available for use with your GitHub
@@ -70,7 +70,7 @@ command arguments via clicking `Edit`.
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["@idanfishman/prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest"]
     }
   }
 }
@@ -85,7 +85,7 @@ Follow Windsurf MCP documentation. Use the following configuration:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["@idanfishman/prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest"]
     }
   }
 }
@@ -101,7 +101,7 @@ use the following configuration:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["@idanfishman/prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest"]
     }
   }
 }
@@ -113,7 +113,7 @@ Prometheus MCP server supports the following arguments. They can be provided in 
 configuration above, as part of the `"args"` list:
 
 ```bash
-> npx @idanfishman/prometheus-mcp@latest --help
+> npx prometheus-mcp@latest --help
 
 Commands:
   stdio  Start Prometheus MCP server using stdio transport
@@ -139,7 +139,7 @@ When running in server environments or when you need HTTP transport, run the MCP
 with the `http` command:
 
 ```bash
-npx @idanfishman/prometheus-mcp@latest http --port 8932
+npx prometheus-mcp@latest http --port 8932
 ```
 
 And then in your MCP client config, set the `url` to the HTTP endpoint:
