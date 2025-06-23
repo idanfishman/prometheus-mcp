@@ -1,0 +1,15 @@
+export type Response<T> = Prometheus.Response<T>;
+export type QueryResult = Prometheus.QueryResult;
+export type QueryResultValue = Prometheus.QueryResultValue;
+export type SampleValue = Prometheus.SampleValue;
+export type MetricVector = Prometheus.MetricVector;
+export type MatrixResult = Prometheus.MatrixResult;
+export type LabelValues = Prometheus.LabelValues;
+export type Labels = Prometheus.Labels;
+export type MetricMetadata = Prometheus.MetricMetadata;
+export type MetricMetadataEntry = Prometheus.MetricMetadataEntry;
+export type TargetsResult = Prometheus.TargetsResult;
+export type Target = Prometheus.Target;
+export type DroppedTarget = Prometheus.DroppedTarget;
+export type RuntimeInfo = Prometheus.RuntimeInfo;
+export type BuildInfo = Prometheus.BuildInfo;

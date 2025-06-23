@@ -1,0 +1,52 @@
+# Version control
+**/.git
+**/.github
+**/.gitignore
+
+# IDE and editor files
+**/.classpath
+**/.project
+**/.settings
+**/.toolstarget
+**/.vs
+**/.vscode
+
+# Dependencies and lock files
+**/node_modules
+
+# Build outputs and generated files
+**/build
+**/coverage
+**/dist
+**/.cache
+**/.next
+
+# Configuration files
+**/.dockerignore
+**/.env
+**/.nvmrc
+**/.prettier*
+eslint.config.mjs
+vitest.config.js
+
+# Docker and deployment files
+**/charts
+**/compose.y*ml
+**/docker-compose*
+**/Dockerfile*
+**/secrets.dev.yaml
+**/values.dev.yaml
+
+# Project files (platform specific)
+**/*.*proj.user
+**/*.dbmdl
+**/*.jfm
+**/obj
+
+# Log files
+**/npm-debug.log
+
+# Documentation
+CHANGELOG.md
+LICENSE
+README.md

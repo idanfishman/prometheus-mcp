@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: "ci-${{ github.event.pull_request.number }}"
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm typecheck
+
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - run: pnpm audit --audit-level high
+      - uses: actions/dependency-review-action@v4
+
+  test:
+    needs:
+      - lint
+      - security
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - "20"
+          - "22"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test:cov
+      - uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          flags: unittests
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  docker:
+    needs:
+      - lint
+      - security
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v6
+        with:
+          load: true
+          push: false
+          tags: ${{ github.repository }}:test
+      - name: Test Docker image
+        run: |
+          # Start container in background
+          docker run -d --name prometheus-mcp -p 3000:3000 ${{ github.repository }}:test
+          # Wait for container to be ready
+          sleep 10
+          # Run smoke tests
+          curl -f http://localhost:3000/healthy
+          curl -f http://localhost:3000/ready
+          # Stop and remove container
+          docker rm -f prometheus-mcp

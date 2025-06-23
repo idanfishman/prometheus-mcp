@@ -1,0 +1,82 @@
+{
+  "name": "prometheus-mcp",
+  "version": "1.0.0",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "description": "Prometheus MCP Server",
+  "keywords": [
+    "mcp",
+    "prometheus",
+    "prometheus-mcp",
+    "prometheus-mcp-server",
+    "metrics",
+    "metrics-mcp",
+    "metrics-mcp-server"
+  ],
+  "author": "Idan Fishman",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/idanfishman/prometheus-mcp.git"
+  },
+  "main": "dist/index.mjs",
+  "types": "module",
+  "bin": {
+    "prometheus-mcp": "dist/index.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "packageManager": "pnpm@10.12.1",
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "dev": "tsx watch src/index.ts http",
+    "dev:stdio": "tsx watch src/index.ts stdio",
+    "clean": "rimraf dist",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint src/**/*.ts --no-warn-ignored",
+    "lint:fix": "eslint src/**/*.ts --fix --no-warn-ignored",
+    "prebuild": "pnpm typecheck",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.13.0",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "pino": "^9.7.0",
+    "yargs": "^18.0.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@tsconfig/recommended": "^1.0.10",
+    "@types/express": "^5.0.3",
+    "@types/node": "^24.0.3",
+    "@types/yargs": "^17.0.33",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.0",
+    "prettier": "^3.5.3",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.1",
+    "vitest": "^3.2.4"
+  }
+}
