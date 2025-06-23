@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `prometheus_query` - Execute instant Prometheus queries
     - `prometheus_query_range` - Execute range queries with time series data.
 
-## Internal
+### Internal
 
 - **Test coverage** - Test coverage for all critical parts.
 - **Code quality tools** - ESLint and Prettier configuration
