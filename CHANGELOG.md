@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.2](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.0.2) - 2025-06-24
+
+### Added
+
+- Dependabot configuration for automated npm and Docker dependency updates
+- Pull request template with structured changelog sections
+- Collapsible installation sections for multiple platforms (VS Code, Cursor, Windsurf,
+  Claude Desktop)
+
+### Changed
+
+- Updated dependencies: `@modelcontextprotocol/sdk` to `^1.13.1`, `@types/node` to
+  `^24.0.4`, `prettier` to `^3.6.0`
+- Improved README badge styling and visual presentation
+- Enhanced example configurations with environment variables
+
+### Fixed
+
+- Default PROMETHEUS_URL and adjusted default ports for HTTP transport
+
 ## [1.0.1](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.0.1) - 2025-06-24
 
 ### Fixed

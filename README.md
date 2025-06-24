@@ -208,33 +208,28 @@ categories:
 Tools for exploring your Prometheus infrastructure:
 
 - **`prometheus_list_metrics`**
-
   - **Description**: List all available Prometheus metrics
   - **Parameters**: None
   - **Read-only**: **true**
 
 - **`prometheus_metric_metadata`**
-
   - **Description**: Get metadata for a specific Prometheus metric
   - **Parameters**:
     - `metric` (string): Metric name to get metadata for
   - **Read-only**: **true**
 
 - **`prometheus_list_labels`**
-
   - **Description**: List all available Prometheus labels
   - **Parameters**: None
   - **Read-only**: **true**
 
 - **`prometheus_label_values`**
-
   - **Description**: Get all values for a specific Prometheus label
   - **Parameters**:
     - `label` (string): Label name to get values for
   - **Read-only**: **true**
 
 - **`prometheus_list_targets`**
-
   - **Description**: List all Prometheus scrape targets
   - **Parameters**: None
   - **Read-only**: **true**
@@ -252,7 +247,6 @@ Tools for exploring your Prometheus infrastructure:
 Tools for accessing Prometheus server information:
 
 - **`prometheus_runtime_info`**
-
   - **Description**: Get Prometheus runtime information
   - **Parameters**: None
   - **Read-only**: **true**
@@ -269,7 +263,6 @@ Tools for accessing Prometheus server information:
 Tools for executing Prometheus queries:
 
 - **`prometheus_query`**
-
   - **Description**: Execute an instant Prometheus query
   - **Parameters**:
     - `query` (string): Prometheus query expression
