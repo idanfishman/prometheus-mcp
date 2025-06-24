@@ -1,10 +1,10 @@
 # Prometheus MCP Server
 
-[![codecov](https://codecov.io/gh/idanfishman/prometheus-mcp/branch/master/graph/badge.svg)](https://codecov.io/gh/idanfishman/prometheus-mcp)
-[![npm](https://img.shields.io/npm/v/prometheus-mcp.svg)](https://www.npmjs.com/package/prometheus-mcp)
-[![Docker](https://img.shields.io/docker/v/ghcr.io/idanfishman/prometheus-mcp?label=docker&sort=semver)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen)](https://nodejs.org/)
+[![npm](https://img.shields.io/npm/v/prometheus-mcp?color=bright-green&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/prometheus-mcp)
+[![Docker](https://img.shields.io/badge/docker-ghcr.io-brightgreen?logo=docker&logoColor=white)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp)
+[![codecov](https://img.shields.io/codecov/c/github/idanfishman/prometheus-mcp?color=brightgreen&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/idanfishman/prometheus-mcp)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 A Model Context Protocol (MCP) server that provides seamless integration between AI
 assistants and [Prometheus](https://prometheus.io/), enabling natural language
@@ -38,28 +38,31 @@ like this:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest", "stdio"],
+      "env": {
+        "PROMETHEUS_URL": "http://localhost:9090"
+      }
     }
   }
 }
 ```
 
-### Install in VS Code
-
-You can install the Prometheus MCP server using the VS Code CLI:
+<details><summary><b>Install in VS Code</b></summary>
 
 ```bash
 # For VS Code
-code --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest"]}'
+code --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest","stdio"],"env":{"PROMETHEUS_URL":"http://localhost:9090"}}'
 
 # For VS Code Insiders
-code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest"]}'
+code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest","stdio"],"env":{"PROMETHEUS_URL":"http://localhost:9090"}}'
 ```
+
+</details>
 
 After installation, the Prometheus MCP server will be available for use with your GitHub
 Copilot agent in VS Code.
 
-### Install in Cursor
+<details><summary><b>Install in Cursor</b></summary>
 
 Go to `Cursor Settings` → `MCP` → `Add new MCP Server`. Name to your liking, use
 `command` type with the command `npx prometheus-mcp`. You can also verify config or add
@@ -70,13 +73,18 @@ command arguments via clicking `Edit`.
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest", "stdio"],
+      "env": {
+        "PROMETHEUS_URL": "http://localhost:9090"
+      }
     }
   }
 }
 ```
 
-### Install in Windsurf
+</details>
+
+<details><summary><b>Install in Windsurf</b></summary>
 
 Follow Windsurf MCP documentation. Use the following configuration:
 
@@ -85,13 +93,18 @@ Follow Windsurf MCP documentation. Use the following configuration:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest", "stdio"],
+      "env": {
+        "PROMETHEUS_URL": "http://localhost:9090"
+      }
     }
   }
 }
 ```
 
-### Install in Claude Desktop
+</details>
+
+<details><summary><b>Install in Claude Desktop</b></summary>
 
 Follow the [MCP install guide](https://modelcontextprotocol.io/clients#claude-desktop),
 use the following configuration:
@@ -101,12 +114,17 @@ use the following configuration:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["prometheus-mcp@latest"]
+      "args": ["prometheus-mcp@latest", "stdio"],
+      "env": {
+        "PROMETHEUS_URL": "http://localhost:9090"
+      }
     }
   }
 }
 ```
 
+</details>
+  
 ## Configuration
 
 Prometheus MCP server supports the following arguments. They can be provided in the JSON
@@ -139,7 +157,7 @@ When running in server environments or when you need HTTP transport, run the MCP
 with the `http` command:
 
 ```bash
-npx prometheus-mcp@latest http --port 8932
+npx prometheus-mcp@latest http --port 3000
 ```
 
 And then in your MCP client config, set the `url` to the HTTP endpoint:
@@ -149,7 +167,7 @@ And then in your MCP client config, set the `url` to the HTTP endpoint:
   "mcpServers": {
     "prometheus": {
       "command": "npx",
-      "args": ["mcp-remote", "http://localhost:8932/mcp"]
+      "args": ["mcp-remote", "http://localhost:3000/mcp"]
     }
   }
 }
@@ -172,7 +190,8 @@ Run the Prometheus MCP server using Docker:
         "--pull=always",
         "-e",
         "PROMETHEUS_URL=http://host.docker.internal:9090",
-        "ghcr.io/idanfishman/prometheus-mcp"
+        "ghcr.io/idanfishman/prometheus-mcp",
+        "stdio"
       ]
     }
   }
@@ -184,38 +203,33 @@ Run the Prometheus MCP server using Docker:
 The Prometheus MCP server provides 10 tools organized into three configurable
 categories:
 
-### Discovery Tools
+<details><summary><b>Discovery</b></summary>
 
 Tools for exploring your Prometheus infrastructure:
 
 - **`prometheus_list_metrics`**
-
   - **Description**: List all available Prometheus metrics
   - **Parameters**: None
   - **Read-only**: **true**
 
 - **`prometheus_metric_metadata`**
-
   - **Description**: Get metadata for a specific Prometheus metric
   - **Parameters**:
     - `metric` (string): Metric name to get metadata for
   - **Read-only**: **true**
 
 - **`prometheus_list_labels`**
-
   - **Description**: List all available Prometheus labels
   - **Parameters**: None
   - **Read-only**: **true**
 
 - **`prometheus_label_values`**
-
   - **Description**: Get all values for a specific Prometheus label
   - **Parameters**:
     - `label` (string): Label name to get values for
   - **Read-only**: **true**
 
 - **`prometheus_list_targets`**
-
   - **Description**: List all Prometheus scrape targets
   - **Parameters**: None
   - **Read-only**: **true**
@@ -226,12 +240,13 @@ Tools for exploring your Prometheus infrastructure:
     - `scrapePool` (string): Scrape pool name
   - **Read-only**: **true**
 
-### Info Tools
+</details>
+
+<details><summary><b>Info</b></summary>
 
 Tools for accessing Prometheus server information:
 
 - **`prometheus_runtime_info`**
-
   - **Description**: Get Prometheus runtime information
   - **Parameters**: None
   - **Read-only**: **true**
@@ -241,12 +256,13 @@ Tools for accessing Prometheus server information:
   - **Parameters**: None
   - **Read-only**: **true**
 
-### Query Tools
+</details>
+
+<details><summary><b>Query</b></summary>
 
 Tools for executing Prometheus queries:
 
 - **`prometheus_query`**
-
   - **Description**: Execute an instant Prometheus query
   - **Parameters**:
     - `query` (string): Prometheus query expression
@@ -261,6 +277,8 @@ Tools for executing Prometheus queries:
     - `end` (string): End timestamp (RFC3339 or unix timestamp)
     - `step` (string): Query resolution step width
   - **Read-only**: **true**
+
+</details>
 
 ## Example Usage
 
