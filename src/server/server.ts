@@ -115,7 +115,7 @@ export class Server extends McpServer {
 
 export const createServer = () => {
   const config: ServerConfig = {
-    prometheusUrl: process.env.PROMETHEUS_URL || "",
+    prometheusUrl: process.env.PROMETHEUS_URL || "http://localhost:9090",
     enableQueryTools: parseBoolean(process.env.ENABLE_QUERY_TOOLS),
     enableDiscoveryTools: parseBoolean(process.env.ENABLE_DISCOVERY_TOOLS),
     enableInfoTools: parseBoolean(process.env.ENABLE_INFO_TOOLS),
