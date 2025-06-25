@@ -57,10 +57,10 @@ code --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@lat
 code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest","stdio"],"env":{"PROMETHEUS_URL":"http://localhost:9090"}}'
 ```
 
-</details>
-
 After installation, the Prometheus MCP server will be available for use with your GitHub
 Copilot agent in VS Code.
+
+</details>
 
 <details><summary><b>Install in Cursor</b></summary>
 
