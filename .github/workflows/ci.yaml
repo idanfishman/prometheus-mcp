@@ -79,6 +79,7 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           load: true
+          platforms: linux/amd64,linux/arm64
           push: false
           tags: ${{ github.repository }}:test
       - name: Test Docker image
