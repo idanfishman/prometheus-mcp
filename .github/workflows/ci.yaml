@@ -4,10 +4,6 @@ on:
   pull_request:
     branches:
       - master
-    paths:
-      - "src/**"
-      - "package.json"
-      - "pnpm-lock.yaml"
 
 concurrency:
   group: "ci-${{ github.event.pull_request.number }}"
