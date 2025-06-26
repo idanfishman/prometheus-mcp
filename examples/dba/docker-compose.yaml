@@ -1,0 +1,108 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: postgres
+    command:
+      - "postgres"
+      - "-c"
+      - "shared_preload_libraries=pg_stat_statements"
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - monitoring
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres_exporter:
+    image: prometheuscommunity/postgres-exporter:v0.17.1
+    container_name: postgres_exporter
+    command:
+      - "--collector.database"
+      - "--no-collector.database_wraparound"
+      - "--collector.locks"
+      - "--collector.long_running_transactions"
+      - "--no-collector.postmaster"
+      - "--collector.process_idle"
+      - "--no-collector.replication"
+      - "--collector.replication_slot"
+      - "--collector.stat_activity_autovacuum"
+      - "--collector.stat_bgwriter"
+      - "--collector.stat_database"
+      - "--collector.stat_statements"
+      - "--collector.stat_user_tables"
+      - "--collector.stat_wal_receiver"
+      - "--collector.statio_user_indexes"
+      - "--collector.statio_user_tables"
+      - "--collector.wal"
+      - "--log.level=info"
+      - "--log.format=json"
+    environment:
+      - DATA_SOURCE_URI=postgres:5432/postgres?sslmode=disable
+      - DATA_SOURCE_USER=postgres
+      - DATA_SOURCE_PASS=mysecretpassword
+    ports:
+      - "9187:9187"
+    networks:
+      - monitoring
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  prometheus:
+    image: prom/prometheus:v3.4.1
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/config.yaml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/etc/prometheus/console_libraries"
+    networks:
+      - monitoring
+    depends_on:
+      - postgres_exporter
+
+  prometheus_mcp:
+    image: ghcr.io/idanfishman/prometheus-mcp:latest
+    container_name: prometheus_mcp
+    command:
+      - "node"
+      - "dist/index.mjs"
+      - "http"
+    environment:
+      - PROMETHEUS_URL=http://prometheus:9090
+    ports:
+      - "8080:8080"
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+  grafana:
+    image: grafana/grafana:12.0.2
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring:
+    driver: bridge
