@@ -81,7 +81,7 @@ services:
     environment:
       - PROMETHEUS_URL=http://prometheus:9090
     ports:
-      - "8080:8080"
+      - "8080:3000"
     networks:
       - monitoring
     depends_on:
