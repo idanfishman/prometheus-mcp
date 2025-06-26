@@ -68,14 +68,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+        id: buildx
         with:
           platforms: linux/amd64
-      - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
         with:
           load: true
-          platforms: linux/amd64
+          platforms: ${{ steps.buildx.outputs.platforms }}
           push: false
           tags: ${{ github.repository }}:test
       - name: Test Docker image
