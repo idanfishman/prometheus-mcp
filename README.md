@@ -1,26 +1,15 @@
 # Prometheus MCP Server
 
-[![npm](https://img.shields.io/npm/v/prometheus-mcp?color=bright-green&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/prometheus-mcp)
-[![Docker](https://img.shields.io/badge/docker-ghcr.io-brightgreen?logo=docker&logoColor=white)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp)
-[![codecov](https://img.shields.io/codecov/c/github/idanfishman/prometheus-mcp?color=brightgreen&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/idanfishman/prometheus-mcp)
-[![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+[![npm](https://img.shields.io/npm/v/prometheus-mcp?color=bright-green&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/prometheus-mcp) [![Docker](https://img.shields.io/badge/docker-ghcr.io-brightgreen?logo=docker&logoColor=white)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp) [![codecov](https://img.shields.io/codecov/c/github/idanfishman/prometheus-mcp?color=brightgreen&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/idanfishman/prometheus-mcp) [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
-A Model Context Protocol (MCP) server that provides seamless integration between AI
-assistants and [Prometheus](https://prometheus.io/), enabling natural language
-interactions with your monitoring infrastructure. This server allows for effortless
-querying, discovery, and analysis of metrics through Visual Studio Code, Cursor,
-Windsurf, Claude Desktop, and other MCP clients.
+A Model Context Protocol (MCP) server that provides seamless integration between AI assistants and [Prometheus](https://prometheus.io/), enabling natural language interactions with your monitoring infrastructure. This server allows for effortless querying, discovery, and analysis of metrics through Visual Studio Code, Cursor, Windsurf, Claude Desktop, and other MCP clients.
 
 ## Key Features
 
-- **Fast and lightweight**. Direct API integration with Prometheus, no complex parsing
-  needed.
+- **Fast and lightweight**. Direct API integration with Prometheus, no complex parsing needed.
 - **LLM-friendly**. Structured JSON responses optimized for AI assistant consumption.
-- **Configurable capabilities**. Enable/disable tool categories based on your security
-  and operational requirements.
-- **Dual transport support**. Works with both stdio and HTTP transports for maximum
-  compatibility.
+- **Configurable capabilities**. Enable/disable tool categories based on your security and operational requirements.
+- **Dual transport support**. Works with both stdio and HTTP transports for maximum compatibility.
 
 ## Requirements
 
@@ -30,8 +19,7 @@ Windsurf, Claude Desktop, and other MCP clients.
 
 ## Getting Started
 
-First, install the Prometheus MCP server with your client. A typical configuration looks
-like this:
+First, install the Prometheus MCP server with your client. A typical configuration looks like this:
 
 ```json
 {
@@ -57,16 +45,13 @@ code --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@lat
 code-insiders --add-mcp '{"name":"prometheus","command":"npx","args":["prometheus-mcp@latest","stdio"],"env":{"PROMETHEUS_URL":"http://localhost:9090"}}'
 ```
 
-After installation, the Prometheus MCP server will be available for use with your GitHub
-Copilot agent in VS Code.
+After installation, the Prometheus MCP server will be available for use with your GitHub Copilot agent in VS Code.
 
 </details>
 
 <details><summary><b>Install in Cursor</b></summary>
 
-Go to `Cursor Settings` → `MCP` → `Add new MCP Server`. Name to your liking, use
-`command` type with the command `npx prometheus-mcp`. You can also verify config or add
-command arguments via clicking `Edit`.
+Go to `Cursor Settings` → `MCP` → `Add new MCP Server`. Name to your liking, use `command` type with the command `npx prometheus-mcp`. You can also verify config or add command arguments via clicking `Edit`.
 
 ```json
 {
@@ -106,8 +91,7 @@ Follow Windsurf MCP documentation. Use the following configuration:
 
 <details><summary><b>Install in Claude Desktop</b></summary>
 
-Follow the [MCP install guide](https://modelcontextprotocol.io/clients#claude-desktop),
-use the following configuration:
+Follow the [MCP install guide](https://modelcontextprotocol.io/clients#claude-desktop), use the following configuration:
 
 ```json
 {
@@ -127,8 +111,7 @@ use the following configuration:
   
 ## Configuration
 
-Prometheus MCP server supports the following arguments. They can be provided in the JSON
-configuration above, as part of the `"args"` list:
+Prometheus MCP server supports the following arguments. They can be provided in the JSON configuration above, as part of the `"args"` list:
 
 ```bash
 > npx prometheus-mcp@latest --help
@@ -153,8 +136,7 @@ You can also configure the server using environment variables:
 
 ## Standalone MCP Server
 
-When running in server environments or when you need HTTP transport, run the MCP server
-with the `http` command:
+When running in server environments or when you need HTTP transport, run the MCP server with the `http` command:
 
 ```bash
 npx prometheus-mcp@latest http --port 3000
@@ -200,8 +182,7 @@ Run the Prometheus MCP server using Docker:
 
 ## Tools
 
-The Prometheus MCP server provides 10 tools organized into three configurable
-categories:
+The Prometheus MCP server provides 10 tools organized into three configurable categories:
 
 <details><summary><b>Discovery</b></summary>
 
@@ -305,8 +286,7 @@ Here are some example interactions you can have with your AI assistant:
 ## Security Considerations
 
 - **Network Access**: The server requires network access to your Prometheus instance
-- **Resource Usage**: Range queries can be resource-intensive; monitor your Prometheus
-  server load
+- **Resource Usage**: Range queries can be resource-intensive; monitor your Prometheus server load
 
 ## Troubleshooting
 
@@ -327,15 +307,12 @@ Here are some example interactions you can have with your AI assistant:
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for
-details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Support
 
-- **GitHub Issues**:
-  [Report bugs or request features](https://github.com/idanfishman/prometheus-mcp/issues)
-- **Documentation**:
-  [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
+- **GitHub Issues**: [Report bugs or request features](https://github.com/idanfishman/prometheus-mcp/issues)
+- **Documentation**: [Model Context Protocol Documentation](https://modelcontextprotocol.io/)
 - **Prometheus**: [Prometheus Documentation](https://prometheus.io/docs/)
 
 Built with ❤️ for the Prometheus and MCP communities
