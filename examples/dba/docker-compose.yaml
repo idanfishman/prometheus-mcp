@@ -103,24 +103,6 @@ services:
     depends_on:
       - prometheus
 
-  bad_app:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    container_name: bad_app
-    environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=postgres
-      - DB_PASSWORD=mysecretpassword
-      - DB_NAME=postgres
-    networks:
-      - monitoring
-    depends_on:
-      postgres:
-        condition: service_healthy
-    restart: unless-stopped
-
 networks:
   monitoring:
     driver: bridge
