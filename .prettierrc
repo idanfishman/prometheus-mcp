@@ -9,10 +9,9 @@
   "jsxSingleQuote": false,
   "trailingComma": "all",
   "bracketSpacing": true,
-  "objectWrap": "preserve",
   "bracketSameLine": false,
   "arrowParens": "always",
-  "proseWrap": "always",
+  "proseWrap": "never",
   "endOfLine": "lf",
   "singleAttributePerLine": true
 }
