@@ -9,8 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Issue where the `linux/arm64` was not built, enabling support for multiple
-  architectures in the Docker build process.
+- Issue where the `linux/arm64` was not built, enabling support for multiple architectures in the Docker build process.
 
 ## [1.0.2](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.0.2) - 2025-06-24
 
@@ -18,13 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dependabot configuration for automated npm and Docker dependency updates
 - Pull request template with structured changelog sections
-- Collapsible installation sections for multiple platforms (VS Code, Cursor, Windsurf,
-  Claude Desktop)
+- Collapsible installation sections for multiple platforms (VS Code, Cursor, Windsurf, Claude Desktop)
 
 ### Changed
 
-- Updated dependencies: `@modelcontextprotocol/sdk` to `^1.13.1`, `@types/node` to
-  `^24.0.4`, `prettier` to `^3.6.0`
+- Updated dependencies: `@modelcontextprotocol/sdk` to `^1.13.1`, `@types/node` to `^24.0.4`, `prettier` to `^3.6.0`
 - Improved README badge styling and visual presentation
 - Enhanced example configurations with environment variables
 
@@ -42,16 +39,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Model Context Protocol (MCP) server** for Prometheus integration, enabling AI
-  assistants to interact with Prometheus through natural language.
+- **Model Context Protocol (MCP) server** for Prometheus integration, enabling AI assistants to interact with Prometheus through natural language.
 - **NPM package** (`idanfishman/prometheus-mcp`) for easy installation and integration.
-- **Docker container** (`idanfishman/prometheus-mcp`) for containerized deployments,
-  including health check endpoints.
+- **Docker container** (`idanfishman/prometheus-mcp`) for containerized deployments, including health check endpoints.
 - **Dual transport support**:
   - **stdio transport** - For direct integration with MCP clients like VS Code
   - **HTTP transport** - For web-based integrations and API access
-- **Configurable tool capabilities** - Enable/disable specific tool categories as
-  needed:
+- **Configurable tool capabilities** - Enable/disable specific tool categories as needed:
   - All capabilities enabled by default
   - Granular control over Discovery, Info, and Query tools
 - **10 Prometheus tools** organized into three categories:
