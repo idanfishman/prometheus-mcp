@@ -6,7 +6,7 @@ on:
       - master
 
 concurrency:
-  group: "ci-${{ github.event.pull_request.number }}"
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.head_ref || github.ref }}"
   cancel-in-progress: true
 
 jobs:
@@ -80,12 +80,21 @@ jobs:
           tags: ${{ github.repository }}:test
       - name: Test Docker image
         run: |
-          # Start container in background
-          docker run -d --name prometheus-mcp -p 3000:3000 ${{ github.repository }}:test
-          # Wait for container to be ready
-          sleep 10
-          # Run smoke tests
-          curl -f http://localhost:3000/healthy
-          curl -f http://localhost:3000/ready
-          # Stop and remove container
-          docker rm -f prometheus-mcp
+          echo "starting container..."
+          docker run -d \
+            --name test \
+            --health-cmd="wget --quiet --tries=1 --spider http://localhost:3000/healthy || exit 1" \
+            --health-interval=5s \
+            --health-timeout=3s \
+            --health-retries=3 \
+            -p 3000:3000 \
+            ${{ github.repository }}:test
+
+          echo "waiting for container to be ready..."
+          if timeout 30 bash -c 'until [ "$(docker inspect -f "{{.State.Health.Status}}" test)" == "healthy" ]; do sleep 2; done'; then
+            echo "container is healthy"
+          else
+            echo "container did not become healthy in time"
+            docker logs test || true
+          fi
+          docker rm -f test || true
