@@ -1,493 +1,468 @@
-<<<<<<< ours
+# PostgreSQL AI DBA Agent
 
-# PostgreSQL DBA Monitoring Example
+## Overview
 
-This example demonstrates a complete PostgreSQL monitoring setup using Prometheus, Grafana, and a "bad" Go application that generates various database performance issues for monitoring and analysis.
+This comprehensive test suite validates AI-powered PostgreSQL database administration capabilities by simulating realistic performance scenarios. Using Prometheus metrics from `postgres_exporter`, we test whether AI agents can accurately diagnose, analyze, and recommend solutions for database performance issues.
 
-## Components
+- **Single Command Setup**: `./entrypoint.sh` - Everything runs automatically
+- **Realistic Scenarios**: 60-minute Black Friday simulation with 6 distinct performance phases
+- **Fully Containerized**: No local dependencies except Docker
+- **Complete Monitoring**: Prometheus + Grafana + postgres_exporter included
+- **AI-Ready**: Specialized prompts for different DBA analysis scenarios
+- **Automated Orchestration**: Load generator manages the entire journey
 
-### 1. PostgreSQL Database
+## Real-World Scenario: E-commerce Black Friday
 
-- **Image**: `postgres:17-alpine`
-- **Port**: `5432`
-- **Features**:
-  - `pg_stat_statements` extension enabled for query statistics
-  - Custom initialization script
-  - Health checks configured
+**Setting:** "ShopFast" - A high-traffic e-commerce platform during Black Friday
 
-### 2. PostgreSQL Exporter
+**Database Stats:**
 
-- **Image**: `prometheuscommunity/postgres-exporter:v0.17.1`
-- **Port**: `9187`
-- **Collectors Enabled**:
-  - Database statistics
-  - Lock information
-  - Long running transactions
-  - Statement statistics
-  - User table statistics
-  - WAL statistics
-  - Background writer stats
-  - And many more...
+- 2M active users
+- 500K products in catalog
+- Multiple microservices architecture
+- Peak traffic multiplier: 5x normal load
 
-### 3. Prometheus
+**Business Impact:** Critical revenue period requiring 99.9% uptime and optimal performance
 
-- **Image**: `prom/prometheus:v3.4.1`
-- **Port**: `9090`
-- **Configuration**: Custom config to scrape PostgreSQL metrics
+## Test Architecture
 
-### 4. Prometheus MCP Server
-
-- **Image**: `ghcr.io/idanfishman/prometheus-mcp:latest`
-- **Port**: `8080`
-- **Purpose**: Provides MCP interface for querying Prometheus metrics
-
-### 5. Grafana
-
-- **Image**: `grafana/grafana:12.0.2`
-- **Port**: `3000`
-- **Credentials**: `admin` / `admin123`
-- **Features**: Pre-configured Prometheus datasource
-
-### 6. Bad Application (The Star of the Show!)
-
-- **Build**: Custom Go application
-- **Port**: `8081`
-- **Purpose**: Generates various PostgreSQL performance issues
-- **Configuration**: Uses environment variables for database connection
-
-## What the Bad Application Does
-
-The bad application is designed to create realistic database performance problems that you might encounter in production:
-
-### 🔒 **Long-Running Transactions**
-
-- Holds transactions open for 30+ seconds
-- Blocks other operations waiting for locks
-- Creates transaction ID wraparound concerns
-
-### ⚔️ **Lock Contention**
-
-- Multiple goroutines compete for the same rows
-- Creates row-level lock waits
-- Demonstrates lock queue buildup
-
-### 🐌 **Inefficient Queries**
-
-- Queries without proper indexes
-- Full table scans with functions (`UPPER()`)
-- Complex JOINs on unindexed columns
-- Slow result processing
-
-### 🌊 **Connection Pool Exhaustion**
-
-- Spawns 60+ concurrent connections (more than pool limit)
-- Holds connections with long-running queries
-- Demonstrates connection limit issues
-
-### 💾 **Heavy Write Operations**
-
-- Bulk inserts to audit log (1000 records per cycle)
-- Bulk updates on user table (500 per cycle)
-- Bulk deletes creating dead tuples
-- Stresses autovacuum processes
-
-### 💀 **Deadlock Scenarios**
-
-- Two transactions locking resources in different orders
-- Classic deadlock patterns (A→B, B→A)
-- PostgreSQL deadlock detection in action
-
-### 📊 **Slow Table Scans**
-
-- Expensive aggregations without indexes
-- Date-based grouping on large tables
-- Complex calculations during scans
-
-## Configuration
-
-The bad application uses the following environment variables for database connection:
-
-| Variable      | Default            | Description              |
-| ------------- | ------------------ | ------------------------ |
-| `DB_HOST`     | `postgres`         | PostgreSQL host          |
-| `DB_PORT`     | `5432`             | PostgreSQL port          |
-| `DB_USER`     | `postgres`         | PostgreSQL username      |
-| `DB_PASSWORD` | `mysecretpassword` | PostgreSQL password      |
-| `DB_NAME`     | `postgres`         | PostgreSQL database name |
-
-These are pre-configured in the docker-compose.yaml file but can be overridden if needed.
-
-## Getting Started
-
-1. **Start the stack**:
-
-   ```bash
-   cd examples/dba
-   docker-compose up -d
-   ```
-
-2. **Wait for initialization** (about 30-60 seconds for the bad app to create tables and data)
-
-3. **Access the services**:
-   - **Grafana**: http://localhost:3000 (admin/admin123)
-   - **Prometheus**: http://localhost:9090
-   - **PostgreSQL Exporter**: http://localhost:9187/metrics
-   - **Prometheus MCP**: http://localhost:8080
-   - **Bad App Metrics**: http://localhost:8081/metrics
-
-4. **Watch the chaos unfold**:
-
-   ```bash
-   # Watch bad app logs
-   docker-compose logs -f bad_app
-
-   # Monitor PostgreSQL activity
-   docker-compose exec postgres psql -U postgres -c "
-   SELECT
-     pid,
-     state,
-     query_start,
-     state_change,
-     wait_event_type,
-     wait_event,
-     substring(query, 1, 50) as query
-   FROM pg_stat_activity
-   WHERE state != 'idle'
-   ORDER BY query_start;
-   "
-   ```
-
-## Monitoring Queries
-
-Here are some useful queries to run in Prometheus or through the MCP interface:
-
-### Connection Metrics
-
-```promql
-# Active connections
-pg_stat_database_numbackends{datname="postgres"}
-
-# Max connections
-pg_settings_max_connections
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   PostgreSQL    │    │ Prometheus       │    │ AI DBA Agent    │
+│   Database      │◄──►│ + postgres_      │◄──►│ Analysis &      │
+│   + pgbench     │    │   exporter       │    │ Recommendations │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
-### Lock Metrics
+### Components
 
-```promql
-# Lock waits
-pg_locks_count{mode="AccessExclusiveLock"}
+- **PostgreSQL 14+** with realistic e-commerce schema
+- **Prometheus** with postgres_exporter v0.17.1
+- **pgbench** for controlled load generation
+- **AI Agent** with specialized DBA prompts
 
-# Long running transactions
-pg_stat_activity_max_tx_duration
-```
+## The 60-Minute Journey
 
-### Query Performance
+### Phase 1: Normal Operations (0-10 minutes)
 
-```promql
-# Slow queries
-rate(pg_stat_statements_mean_time_seconds[5m])
+**Scenario:** Regular shopping activity, typical user behavior
 
-# Query calls
-rate(pg_stat_statements_calls_total[5m])
-```
-
-### Vacuum Metrics
-
-```promql
-# Dead tuples
-pg_stat_user_tables_n_dead_tup
-
-# Autovacuum runs
-pg_stat_user_tables_autovacuum_count
-```
-
-## What You'll See
-
-After running for a few minutes, you should observe:
-
-- 🔴 **High connection counts** approaching limits
-- 🔴 **Lock waits** and contention in `pg_locks`
-- 🔴 **Long-running transactions** in `pg_stat_activity`
-- 🔴 **Dead tuple accumulation** in user tables
-- 🔴 **Slow query patterns** in `pg_stat_statements`
-- 🔴 **Deadlock detection** in PostgreSQL logs
-- 🔴 **High CPU/IO usage** from inefficient queries
-
-## Cleanup
+**Simulation:**
 
 ```bash
-docker-compose down -v
+pgbench -c 10 -j 2 -T 600 -f normal_operations.sql
 ```
 
-This will stop all services and remove the volumes (including the PostgreSQL data).
+**Expected Metrics:**
 
-## Using with MCP
+- Connections: 15-20
+- Cache hit ratio: 95%+
+- Query response time: <50ms
 
-This setup is perfect for testing the Prometheus MCP server's ability to diagnose database issues. You can ask the MCP agent questions like:
+**AI Validation:** System should report healthy baseline
 
-- "What database performance issues do you see?"
-- "Are there any long-running transactions?"
-- "Show me the slowest queries"
-- "What's causing the lock contention?"
-- "How is the vacuum process performing?"
+---
 
-The MCP server will query Prometheus metrics and provide intelligent analysis of the database performance problems created by our bad application!
+### Phase 2: Traffic Surge (10-20 minutes)
 
-## Educational Value
+**Scenario:** Black Friday begins, 3x traffic increase
 
-This example demonstrates:
-
-- Real-world database performance issues
-- How PostgreSQL metrics expose problems
-- The value of comprehensive monitoring
-- How different issues interact and compound
-- The importance of proper indexing, connection management, and query optimization
-
-Perfect for learning database performance tuning and monitoring! 🎓 ||||||| =======
-
-# PostgreSQL DBA Monitoring Example
-
-This example demonstrates a complete PostgreSQL monitoring setup using Prometheus, Grafana, and a "bad" Go application that generates various database performance issues for monitoring and analysis.
-
-## Components
-
-### 1. PostgreSQL Database
-
-- **Image**: `postgres:17-alpine`
-- **Port**: `5432`
-- **Features**:
-  - `pg_stat_statements` extension enabled for query statistics
-  - Custom initialization script
-  - Health checks configured
-
-### 2. PostgreSQL Exporter
-
-- **Image**: `prometheuscommunity/postgres-exporter:v0.17.1`
-- **Port**: `9187`
-- **Collectors Enabled**:
-  - Database statistics
-  - Lock information
-  - Long running transactions
-  - Statement statistics
-  - User table statistics
-  - WAL statistics
-  - Background writer stats
-  - And many more...
-
-### 3. Prometheus
-
-- **Image**: `prom/prometheus:v3.4.1`
-- **Port**: `9090`
-- **Configuration**: Custom config to scrape PostgreSQL metrics
-
-### 4. Prometheus MCP Server
-
-- **Image**: `ghcr.io/idanfishman/prometheus-mcp:latest`
-- **Port**: `8080`
-- **Purpose**: Provides MCP interface for querying Prometheus metrics
-
-### 5. Grafana
-
-- **Image**: `grafana/grafana:12.0.2`
-- **Port**: `3000`
-- **Credentials**: `admin` / `admin123`
-- **Features**: Pre-configured Prometheus datasource
-
-### 6. Bad Application (The Star of the Show!)
-
-- **Build**: Custom Go application
-- **Port**: `8081`
-- **Purpose**: Generates various PostgreSQL performance issues
-- **Configuration**: Uses environment variables for database connection
-
-## What the Bad Application Does
-
-The bad application is designed to create realistic database performance problems that you might encounter in production:
-
-### 🔒 **Long-Running Transactions**
-
-- Holds transactions open for 30+ seconds
-- Blocks other operations waiting for locks
-- Creates transaction ID wraparound concerns
-
-### ⚔️ **Lock Contention**
-
-- Multiple goroutines compete for the same rows
-- Creates row-level lock waits
-- Demonstrates lock queue buildup
-
-### 🐌 **Inefficient Queries**
-
-- Queries without proper indexes
-- Full table scans with functions (`UPPER()`)
-- Complex JOINs on unindexed columns
-- Slow result processing
-
-### 🌊 **Connection Pool Exhaustion**
-
-- Spawns 60+ concurrent connections (more than pool limit)
-- Holds connections with long-running queries
-- Demonstrates connection limit issues
-
-### 💾 **Heavy Write Operations**
-
-- Bulk inserts to audit log (1000 records per cycle)
-- Bulk updates on user table (500 per cycle)
-- Bulk deletes creating dead tuples
-- Stresses autovacuum processes
-
-### 💀 **Deadlock Scenarios**
-
-- Two transactions locking resources in different orders
-- Classic deadlock patterns (A→B, B→A)
-- PostgreSQL deadlock detection in action
-
-### 📊 **Slow Table Scans**
-
-- Expensive aggregations without indexes
-- Date-based grouping on large tables
-- Complex calculations during scans
-
-## Configuration
-
-The bad application uses the following environment variables for database connection:
-
-| Variable      | Default            | Description              |
-| ------------- | ------------------ | ------------------------ |
-| `DB_HOST`     | `postgres`         | PostgreSQL host          |
-| `DB_PORT`     | `5432`             | PostgreSQL port          |
-| `DB_USER`     | `postgres`         | PostgreSQL username      |
-| `DB_PASSWORD` | `mysecretpassword` | PostgreSQL password      |
-| `DB_NAME`     | `postgres`         | PostgreSQL database name |
-
-These are pre-configured in the docker-compose.yaml file but can be overridden if needed.
-
-## Getting Started
-
-1. **Start the stack**:
-
-   ```bash
-   cd examples/dba
-   docker-compose up -d
-   ```
-
-2. **Wait for initialization** (about 30-60 seconds for the bad app to create tables and data)
-
-3. **Access the services**:
-   - **Grafana**: http://localhost:3000 (admin/admin123)
-   - **Prometheus**: http://localhost:9090
-   - **PostgreSQL Exporter**: http://localhost:9187/metrics
-   - **Prometheus MCP**: http://localhost:8080
-   - **Bad App Metrics**: http://localhost:8081/metrics
-
-4. **Watch the chaos unfold**:
-
-   ```bash
-   # Watch bad app logs
-   docker-compose logs -f bad_app
-
-   # Monitor PostgreSQL activity
-   docker-compose exec postgres psql -U postgres -c "
-   SELECT
-     pid,
-     state,
-     query_start,
-     state_change,
-     wait_event_type,
-     wait_event,
-     substring(query, 1, 50) as query
-   FROM pg_stat_activity
-   WHERE state != 'idle'
-   ORDER BY query_start;
-   "
-   ```
-
-## Monitoring Queries
-
-Here are some useful queries to run in Prometheus or through the MCP interface:
-
-### Connection Metrics
-
-```promql
-# Active connections
-pg_stat_database_numbackends{datname="postgres"}
-
-# Max connections
-pg_settings_max_connections
-```
-
-### Lock Metrics
-
-```promql
-# Lock waits
-pg_locks_count{mode="AccessExclusiveLock"}
-
-# Long running transactions
-pg_stat_activity_max_tx_duration
-```
-
-### Query Performance
-
-```promql
-# Slow queries
-rate(pg_stat_statements_mean_time_seconds[5m])
-
-# Query calls
-rate(pg_stat_statements_calls_total[5m])
-```
-
-### Vacuum Metrics
-
-```promql
-# Dead tuples
-pg_stat_user_tables_n_dead_tup
-
-# Autovacuum runs
-pg_stat_user_tables_autovacuum_count
-```
-
-## What You'll See
-
-After running for a few minutes, you should observe:
-
-- 🔴 **High connection counts** approaching limits
-- 🔴 **Lock waits** and contention in `pg_locks`
-- 🔴 **Long-running transactions** in `pg_stat_activity`
-- 🔴 **Dead tuple accumulation** in user tables
-- 🔴 **Slow query patterns** in `pg_stat_statements`
-- 🔴 **Deadlock detection** in PostgreSQL logs
-- 🔴 **High CPU/IO usage** from inefficient queries
-
-## Cleanup
+**Simulation:**
 
 ```bash
-docker-compose down -v
+pgbench -c 30 -j 4 -T 600 -f heavy_browsing.sql &
+pgbench -c 15 -j 2 -T 600 -f product_searches.sql &
 ```
 
-This will stop all services and remove the volumes (including the PostgreSQL data).
+**Expected Metrics:**
 
-## Using with MCP
+- Connections: 45+
+- Slight performance degradation
+- Increased query volume
 
-This setup is perfect for testing the Prometheus MCP server's ability to diagnose database issues. You can ask the MCP agent questions like:
+**AI Validation:** Should detect traffic pattern change and recommend monitoring
 
-- "What database performance issues do you see?"
-- "Are there any long-running transactions?"
-- "Show me the slowest queries"
-- "What's causing the lock contention?"
-- "How is the vacuum process performing?"
+---
 
-The MCP server will query Prometheus metrics and provide intelligent analysis of the database performance problems created by our bad application!
+### Phase 3: Lock Contention Storm (20-35 minutes)
 
-## Educational Value
+**Scenario:** Inventory updates during high purchase volume create deadlocks
 
-This example demonstrates:
+**Simulation:**
 
-- Real-world database performance issues
-- How PostgreSQL metrics expose problems
-- The value of comprehensive monitoring
-- How different issues interact and compound
-- The importance of proper indexing, connection management, and query optimization
+```bash
+pgbench -c 5 -j 1 -T 900 -f inventory_updates.sql &
+pgbench -c 20 -j 4 -T 900 -f purchase_attempts.sql &
+```
 
-Perfect for learning database performance tuning and monitoring! 🎓
+**Target Metrics:**
 
-> > > > > > > theirs
+- `pg_locks_count{mode="RowExclusiveLock"}` spikes
+- `pg_long_running_transactions_max_duration_seconds` > 30s
+- `pg_database_deadlocks` increases
+
+**AI Validation:**
+
+- Should trigger **CRITICAL ALERT**
+- Identify blocking inventory queries
+- Recommend immediate intervention
+
+---
+
+### Phase 4: Query Performance Collapse (30-45 minutes)
+
+**Scenario:** Recommendation engine deploys inefficient queries
+
+**Simulation:**
+
+```bash
+pgbench -c 15 -j 3 -T 900 -f expensive_analytics.sql &
+pgbench -c 10 -j 2 -T 900 -f unoptimized_searches.sql &
+```
+
+**Target Metrics:**
+
+- `pg_stat_statements_mean_time` dramatically increases
+- `pg_stat_user_tables_seq_scan` spikes
+- Cache hit ratio drops to <90%
+
+**AI Validation:**
+
+- Identify specific slow queries
+- Recommend index creation
+- Suggest query optimization
+
+---
+
+### Phase 5: Connection Pool Exhaustion (40-55 minutes)
+
+**Scenario:** Mobile app connection leak during peak traffic
+
+**Simulation:**
+
+```bash
+pgbench -c 70 -j 10 -T 900 -f connection_leak.sql &
+```
+
+**Target Metrics:**
+
+- `pg_database_numbackends` approaches max_connections (100)
+- `pg_process_idle_seconds` shows many long-idle connections
+- New connections start failing
+
+**AI Validation:**
+
+- Should trigger **CRITICAL ALERT**
+- Distinguish between high load vs. connection leak
+- Recommend immediate connection cleanup
+
+---
+
+### Phase 6: Recovery & Stabilization (50-60 minutes)
+
+**Scenario:** DBA intervention successful, system recovers
+
+**Simulation:**
+
+```bash
+# Gradual load reduction
+pgbench -c 15 -j 3 -T 600 -f recovery_load.sql
+```
+
+**Expected Metrics:**
+
+- All metrics return to normal ranges
+- Performance indicators improve
+- System stability restored
+
+**AI Validation:**
+
+- Detect recovery pattern
+- Confirm system stabilization
+- Provide post-incident analysis
+
+## Database Schema & Data
+
+### E-commerce Schema
+
+```sql
+-- Products catalog (500K items)
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    category_id INT,
+    price DECIMAL(10,2),
+    stock_quantity INT,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Order management
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INT,
+    total_amount DECIMAL(10,2),
+    status VARCHAR(20),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Order line items
+CREATE TABLE order_items (
+    id SERIAL PRIMARY KEY,
+    order_id INT REFERENCES orders(id),
+    product_id INT REFERENCES products(id),
+    quantity INT,
+    price DECIMAL(10,2)
+);
+
+-- Indexes (some intentionally missing for testing)
+CREATE INDEX idx_products_category ON products(category_id);
+CREATE INDEX idx_orders_user ON orders(user_id);
+-- Missing: products(name), products(description) - for seq scan testing
+```
+
+### Data Generation
+
+```sql
+-- Generate 500K products
+INSERT INTO products
+SELECT
+    generate_series(1,500000),
+    'Product ' || generate_series(1,500000),
+    (random() * 100)::int + 1,
+    (random() * 1000 + 10)::decimal(10,2),
+    (random() * 1000)::int,
+    'Description for product ' || generate_series(1,500000),
+    NOW() - (random() * interval '365 days');
+
+-- Generate 1M orders
+INSERT INTO orders
+SELECT
+    generate_series(1,1000000),
+    (random() * 100000)::int + 1,
+    (random() * 5000 + 10)::decimal(10,2),
+    CASE WHEN random() < 0.8 THEN 'completed' ELSE 'pending' END,
+    NOW() - (random() * interval '180 days');
+```
+
+## pgbench Workload Files
+
+### normal_operations.sql
+
+```sql
+-- Typical user browsing patterns
+\set product_id random(1, 500000)
+\set user_id random(1, 100000)
+
+SELECT * FROM products WHERE id = :product_id;
+SELECT COUNT(*) FROM orders WHERE user_id = :user_id;
+SELECT * FROM products WHERE category_id = (random() * 100)::int LIMIT 20;
+```
+
+### inventory_updates.sql
+
+```sql
+-- Inventory management causing locks
+\set product_id random(1, 1000)
+
+BEGIN;
+SELECT stock_quantity FROM products WHERE id = :product_id FOR UPDATE;
+\sleep 5000ms
+UPDATE products SET stock_quantity = stock_quantity - (random() * 5)::int
+WHERE id = :product_id;
+COMMIT;
+```
+
+### expensive_analytics.sql
+
+```sql
+-- Intentionally inefficient analytics queries
+SELECT p.name, p.price, COUNT(oi.id) as order_count
+FROM products p
+LEFT JOIN order_items oi ON p.id = oi.product_id
+WHERE p.description LIKE '%premium%'
+GROUP BY p.id, p.name, p.price
+ORDER BY order_count DESC
+LIMIT 100;
+
+-- Sequential scan generator
+SELECT COUNT(*) FROM products WHERE name LIKE '%' || (random() * 1000)::int || '%';
+```
+
+### connection_leak.sql
+
+```sql
+-- Simulate connection leaks with long idle times
+SELECT pg_sleep(30 + random() * 60);
+SELECT 1;
+\sleep 10000ms
+```
+
+## Prometheus Metrics Monitored
+
+### Core Performance Indicators
+
+- `pg_database_numbackends` - Active connections
+- `pg_database_xact_commit` - Transaction throughput
+- `pg_database_blks_hit` / `pg_database_blks_read` - Cache efficiency
+
+### Lock & Transaction Monitoring
+
+- `pg_locks_count{mode, locktype}` - Lock contention patterns
+- `pg_long_running_transactions_max_duration_seconds` - Blocking transactions
+- `pg_database_deadlocks` - Deadlock frequency
+
+### Query Performance Tracking
+
+- `pg_stat_statements_calls` - Query execution frequency
+- `pg_stat_statements_mean_time` - Average query duration
+- `pg_stat_statements_total_time` - Total query time
+
+### I/O & Table Statistics
+
+- `pg_stat_user_tables_seq_scan` - Sequential scan frequency
+- `pg_stat_user_tables_idx_scan` - Index scan efficiency
+- `pg_statio_user_tables_heap_blks_read` - Disk I/O patterns
+
+## AI Agent Validation Strategy
+
+### Post-Test Analysis (Primary Validation)
+
+**After 60-minute test completion:**
+
+#### 1. Core Performance Analysis
+
+Feed complete metrics dataset to AI agent using the Core Performance Analysis prompt:
+
+- **Input**: 1 hour of collected PostgreSQL metrics from Black Friday simulation
+- **Expected Output**: Comprehensive DBA report identifying all 6 performance phases
+- **Validation**: Should detect progression from normal ops → traffic surge → lock contention → query degradation → connection exhaustion → recovery
+
+#### 2. Simulated Real-time Alert Response
+
+Extract critical moments from recorded data and test alert response using Real-time Alert Response prompt:
+
+**Alert Moment 1 (Phase 3 - Minute 25):**
+
+```
+pg_locks_count{mode="RowExclusiveLock"} = 45
+pg_long_running_transactions_max_duration_seconds = 180
+pg_database_deadlocks rate = 0.5/min
+```
+
+**Alert Moment 2 (Phase 5 - Minute 45):**
+
+```
+pg_database_numbackends = 87 (approaching max_connections: 100)
+pg_process_idle_seconds avg = 450
+New connection failures detected
+```
+
+### Success Criteria
+
+#### Historical Analysis Validation
+
+- **Phase Detection**: Identifies 5/6 performance phases correctly
+- **Root Cause Accuracy**: Links symptoms to causes (lock contention → inventory updates)
+- **Trend Analysis**: Recognizes performance degradation patterns over time
+- **Recovery Recognition**: Detects system stabilization in final phase
+
+#### Alert Response Validation
+
+- **Alert Triggering**: Would have generated appropriate alerts for critical moments
+- **Severity Assessment**: Correctly prioritizes connection exhaustion over query slowdowns
+- **Immediate Actions**: Provides specific intervention steps
+- **Investigation Queries**: Suggests correct PromQL queries for deeper analysis
+
+#### Communication Quality
+
+- **Executive Summary**: Clear business impact assessment
+- **Technical Details**: Actionable recommendations for DBA team
+- **Priority Matrix**: Immediate vs. long-term fixes properly categorized
+
+## Quick Start
+
+### Prerequisites
+
+- **Docker & Docker Compose** - Complete containerized solution
+
+```bash
+# Install Docker (if not already installed)
+# macOS: brew install docker docker-compose
+# Ubuntu: sudo apt-get install docker.io docker-compose
+# Windows: Download Docker Desktop
+
+# Verify installation
+docker --version
+docker-compose --version
+```
+
+### One Command to Run Everything
+
+Start the complete 60-minute Black Friday simulation with one command:
+
+```bash
+# 1. Navigate to the DBA example directory
+cd examples/dba
+
+# 2. Start the complete journey
+./entrypoint.sh
+```
+
+**That's it!** This single command will:
+
+- Start PostgreSQL with realistic e-commerce data
+- Launch Prometheus + postgres_exporter for metrics collection
+- Start Grafana with pre-configured dashboards
+- Build and run the load generator container
+- Execute the complete 60-minute Black Friday simulation automatically
+
+### What Happens During the Journey
+
+The load generator will automatically orchestrate 6 realistic performance scenarios:
+
+1. **Phase 1 (0-10m)**: Normal Operations - Baseline performance
+2. **Phase 2 (10-20m)**: Traffic Surge - Black Friday begins, 3x traffic
+3. **Phase 3 (20-35m)**: Lock Contention Storm - Inventory deadlocks
+4. **Phase 4 (35-50m)**: Query Performance Collapse - Slow analytics
+5. **Phase 5 (50-65m)**: Connection Pool Exhaustion - Connection leaks
+6. **Phase 6 (65-75m)**: Recovery & Stabilization - System recovers
+
+### Access Monitoring
+
+Once tests are running, access your monitoring dashboards:
+
+- **Prometheus Metrics**: http://localhost:9090
+- **Grafana Dashboards**: http://localhost:3000 (admin/admin123)
+- **Prometheus MCP Server**: http://localhost:8080
+
+## Expected Outcomes
+
+### Successful AI Agent Should:
+
+1. **Detect all 6 phases** of performance degradation
+2. **Trigger alerts** for critical issues (Phases 3 & 5)
+3. **Provide accurate root cause analysis** for each scenario
+4. **Recommend appropriate fixes** with priority levels
+5. **Generate executive summary** of overall test period
+
+### Metrics Success Thresholds:
+
+- **Detection Rate:** >90% of injected issues identified
+- **Response Time:** <5 minutes for critical alerts
+- **False Positive Rate:** <10%
+- **Remediation Accuracy:** >85% of recommendations appropriate
+
+## Business Value
+
+This test suite validates that AI agents can:
+
+- **Replace on-call DBA** for initial triage
+- **Provide 24/7 monitoring** with expert-level analysis
+- **Reduce MTTR** through accurate root cause identification
+
+**ROI Calculation:**
+
+- Manual DBA response time: 20-60 minutes
+- AI agent response time: 2-5 minutes
+- Cost savings: 70-85% reduction in incident response time

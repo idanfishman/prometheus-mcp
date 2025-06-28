@@ -6,6 +6,10 @@ services:
       - "postgres"
       - "-c"
       - "shared_preload_libraries=pg_stat_statements"
+      - "-c"
+      - "max_parallel_workers=0"
+      - "-c"
+      - "max_parallel_workers_per_gather=0"
     environment:
       POSTGRES_PASSWORD: mysecretpassword
     ports:
@@ -14,11 +18,14 @@ services:
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - monitoring
+    shm_size: 512mb
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+    profiles:
+      - postgres
 
   postgres_exporter:
     image: prometheuscommunity/postgres-exporter:v0.17.1
@@ -51,9 +58,8 @@ services:
       - "9187:9187"
     networks:
       - monitoring
-    depends_on:
-      postgres:
-        condition: service_healthy
+    profiles:
+      - monitoring
 
   prometheus:
     image: prom/prometheus:v3.4.1
@@ -70,6 +76,8 @@ services:
       - monitoring
     depends_on:
       - postgres_exporter
+    profiles:
+      - monitoring
 
   prometheus_mcp:
     image: ghcr.io/idanfishman/prometheus-mcp:latest
@@ -86,6 +94,8 @@ services:
       - monitoring
     depends_on:
       - prometheus
+    profiles:
+      - monitoring
 
   grafana:
     image: grafana/grafana:12.0.2
@@ -102,6 +112,21 @@ services:
       - monitoring
     depends_on:
       - prometheus
+    profiles:
+      - monitoring
+
+  pgbench:
+    build:
+      context: ./pgbench
+      dockerfile: Dockerfile
+    container_name: pgbench
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PASSWORD=mysecretpassword
+    networks:
+      - monitoring
+    profiles:
+      - bench
 
 networks:
   monitoring:
