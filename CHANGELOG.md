@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.0) - 2025-06-28
+
+### Added
+
+- PostgreSQL AI DBA Example - Complete demonstration of Claude acting as an AI DBA using the Prometheus MCP server
+  - 60-minute Black Friday e-commerce simulation with 6 realistic performance phases
+  - Full Docker stack: PostgreSQL, Prometheus, Grafana, PgBench load generator
+  - 9 custom SQL workload patterns simulating real-world database issues
+  - 4 AI DBA prompt templates for different analysis scenarios
+  - Automated orchestration scripts for one-command deployment
+
+### Changed
+
+- Upgraded Docker base image to `node-lts` version `22.17.0`.
+
 ## [1.0.3](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.0.3) - 2025-06-26
 
 ### Fixed
