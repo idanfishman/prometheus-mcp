@@ -59,3 +59,21 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  dxt:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: "pnpm"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm clean
+      - run: pnpm install --prod --frozen-lockfile --prefer-offline
+      - run: ./scripts/pack-dxt.sh
+      - run: gh release upload ${{ github.ref_name }} prometheus-mcp.dxt
