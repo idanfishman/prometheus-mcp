@@ -21,6 +21,7 @@ export default defineConfig({
         "src/cmd/cmd.ts", // CLI entry point
         "src/server/transport.ts", // Transport layer, mainly boilerplate
         "eslint.config.mjs",
+        "scripts/",
       ],
       thresholds: {
         global: {
