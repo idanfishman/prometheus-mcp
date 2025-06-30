@@ -103,7 +103,7 @@ Claude Desktop supports two installation methods:
 
 The easiest way to install is using the pre-built DXT extension:
 
-1. Download the latest `.dxt` file from the [releases page](https://github.com/idanfishman/prometheus-mcp/releases/download/v0.1.0/prometheus-mcp-0.1.0.dxt)
+1. Download the latest `.dxt` file from the [releases page](https://github.com/idanfishman/prometheus-mcp/releases)
 2. Double-click the downloaded file to install automatically
 3. Configure your Prometheus URL in the extension settings
 
