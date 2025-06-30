@@ -1,8 +1,14 @@
-# Prometheus MCP Server
+<h1 align="center" style="border-bottom: none">
+  <img src="./assets/icon.png" alt="Prometheus MCP Logo"><br>Prometheus MCP Server
+</h1>
+
+<div align="center">
 
 [![npm](https://img.shields.io/npm/v/prometheus-mcp?color=bright-green&logo=npm&logoColor=white&label=npm)](https://www.npmjs.com/package/prometheus-mcp) [![Docker](https://img.shields.io/badge/docker-ghcr.io-brightgreen?logo=docker&logoColor=white)](https://github.com/idanfishman/prometheus-mcp/pkgs/container/prometheus-mcp) [![codecov](https://img.shields.io/codecov/c/github/idanfishman/prometheus-mcp?color=brightgreen&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/idanfishman/prometheus-mcp) [![Node.js Version](https://img.shields.io/badge/node-%3E%3D20.19.0-brightgreen?logo=node.js&logoColor=white)](https://nodejs.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
 
 A Model Context Protocol (MCP) server that provides seamless integration between AI assistants and [Prometheus](https://prometheus.io/), enabling natural language interactions with your monitoring infrastructure. This server allows for effortless querying, discovery, and analysis of metrics through Visual Studio Code, Cursor, Windsurf, Claude Desktop, and other MCP clients.
+
+</div>
 
 ## Key Features
 
@@ -91,7 +97,23 @@ Follow Windsurf MCP documentation. Use the following configuration:
 
 <details><summary><b>Install in Claude Desktop</b></summary>
 
-Follow the [MCP install guide](https://modelcontextprotocol.io/clients#claude-desktop), use the following configuration:
+Claude Desktop supports two installation methods:
+
+### Option 1: DXT Extension
+
+The easiest way to install is using the pre-built DXT extension:
+
+1. Download the latest `.dxt` file from the [releases page](https://github.com/idanfishman/prometheus-mcp/releases/download/v0.1.0/prometheus-mcp-0.1.0.dxt)
+2. Double-click the downloaded file to install automatically
+3. Configure your Prometheus URL in the extension settings
+
+### Option 2: Developer Settings
+
+For advanced users or custom configurations, manually configure the MCP server:
+
+1. Open Claude Desktop settings
+2. Navigate to the **Developer** section
+3. Add the following MCP server configuration:
 
 ```json
 {
