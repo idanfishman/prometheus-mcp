@@ -1,6 +1,6 @@
 {
   "name": "prometheus-mcp",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
@@ -53,7 +53,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.13.1",
+    "@modelcontextprotocol/sdk": "^1.13.2",
     "dotenv": "^17.0.0",
     "express": "^5.1.0",
     "pino": "^9.7.0",
@@ -61,17 +61,17 @@
     "zod": "^3.25.67"
   },
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
+    "@eslint/js": "^9.30.0",
     "@tsconfig/recommended": "^1.0.10",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.0.4",
+    "@types/node": "^24.0.7",
     "@types/yargs": "^17.0.33",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
-    "eslint": "^9.29.0",
+    "eslint": "^9.30.0",
     "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-prettier": "^5.5.0",
-    "prettier": "^3.6.0",
+    "eslint-plugin-prettier": "^5.5.1",
+    "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
     "tsx": "^4.20.3",

@@ -5,11 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.1](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.1) - 2025-06-30
+## [1.1.2](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.2) - 2025-06-30
 
-### Added
+### Fixed
 
-- Instructions for installing the MCP server in Claude Desktop via DXT extension.
+- Fixed the issue where the MCP server was not working because of the `dotenv` logging.
 
 ### Changed
 
@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `eslint` to `^9.30.0`
   - `eslint-plugin-prettier` to `^5.5.1`
   - `prettier` to `^3.6.2`
+
+## [1.1.1](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.1) - 2025-06-30
+
+### Added
+
+- Instructions for installing the MCP server in Claude Desktop via DXT extension.
 
 ## [1.1.0](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.0) - 2025-06-29
 
