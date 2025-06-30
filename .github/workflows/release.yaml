@@ -78,3 +78,5 @@ jobs:
       - run: pnpm install -g @anthropic-ai/dxt
       - run: ./scripts/pack-dxt.sh
       - run: gh release upload ${{ github.ref_name }} prometheus-mcp.dxt
+        env:
+          GH_TOKEN: ${{ github.token }}
