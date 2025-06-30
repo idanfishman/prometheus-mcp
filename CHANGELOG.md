@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `eslint-plugin-prettier` to `^5.5.1`
   - `prettier` to `^3.6.2`
 
-## [1.1.1](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.1) - 2025-06-30
+## [1.1.1](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.1) - 2025-06-30 [YANKED]
 
 ### Added
 
