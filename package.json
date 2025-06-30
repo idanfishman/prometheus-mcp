@@ -54,7 +54,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.13.1",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.0.0",
     "express": "^5.1.0",
     "pino": "^9.7.0",
     "yargs": "^18.0.0",
