@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),  
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.3](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.3) - 2025-07-14
+
+### Changed
+
+- Bumped dependencies:
+  - `@modelcontextprotocol/sdk` to `^1.15.1`
+  - `dotenv` to `^17.2.0`
+  - `zod` to `^3.25.76`
+  - `eslint` to `^9.31.0`
+  - `@eslint/js` to `^9.31.0`
+  - `@types/node` to `^24.0.13`
+  - `typescript-eslint` to `^8.36.0`
+
 ## [1.1.2](https://github.com/idanfishman/prometheus-mcp/releases/tag/v1.1.2) - 2025-06-30
 
 ### Fixed
