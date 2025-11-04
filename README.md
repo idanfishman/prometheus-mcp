@@ -8,6 +8,10 @@
 
 A Model Context Protocol (MCP) server that provides seamless integration between AI assistants and [Prometheus](https://prometheus.io/), enabling natural language interactions with your monitoring infrastructure. This server allows for effortless querying, discovery, and analysis of metrics through Visual Studio Code, Cursor, Windsurf, Claude Desktop, and other MCP clients.
 
+<a href="https://glama.ai/mcp/servers/@idanfishman/prometheus-mcp">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@idanfishman/prometheus-mcp/badge" alt="prometheus-mcp MCP server" />
+</a>
+
 </div>
 
 ## Key Features
